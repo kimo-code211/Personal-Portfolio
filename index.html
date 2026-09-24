@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <!--
+    The viewport meta tag is what makes the site responsive on phones.
+    Without it, mobile browsers render the page at a desktop width and shrink it.
+  -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Hakim Elia Ibrahim | Electronics Technology Student &amp; Aspiring Web Developer</title>
+
+  <!-- These tags control what shows up when the link is shared on social media / messaging apps. -->
+  <meta name="description" content="Portfolio of Hakim Hakim, an Electronics Technology student at the University of Eastern Africa, Baraton, learning web development and programming.">
+  <meta name="author" content="Hakim Hakim">
+  <meta name="theme-color" content="#0b1020">
+  <meta property="og:title" content="Hakim Hakim | Aspiring Web Developer">
+  <meta property="og:description" content="Electronics Technology student combining hardware, programming and web technologies.">
+  <meta property="og:type" content="website">
+
+  <!--
+    Preconnect opens the connection to Google Fonts early so the font request
+    does not block rendering later. "display=swap" shows fallback text instantly
+    instead of an invisible page while the font downloads.
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+
+  <!--
+    This tiny inline script runs BEFORE the stylesheet paints, so it can set the
+    saved theme immediately. Doing it here prevents a light-theme "flash" for
+    visitors who chose dark mode on a previous visit.
+  -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = saved || (prefersDark ? 'dark' : 'light');
+      } catch (err) {
+        document.documentElement.dataset.theme = 'light';
+      }
+    })();
+  </script>
+
+  <!-- "defer" means the file downloads in parallel but only runs after the HTML is parsed. -->
+  <script src="script.js" defer></script>
+
+  <!--
+    NOSCRIPT FALLBACK
+    The scroll-reveal animation starts elements at opacity:0 and script.js makes
+    them visible. If JavaScript is disabled that would leave the whole page
+    blank, so we simply force everything visible here instead.
+  -->
+  <noscript>
+    <style>
+      .reveal { opacity: 1 !important; transform: none !important; }
+      .nav__menu { position: static; opacity: 1; visibility: visible; transform: none; width: auto; }
+      .nav__toggle { display: none; }
+    </style>
+  </noscript>
+</head>
+
+<body>
+
+  <!--
+    SKIP LINK (accessibility)
+    Keyboard users can press Tab once and jump straight to the content
+    instead of tabbing through every navigation link on every page load.
+  -->
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- ===================== NAVIGATION ===================== -->
+  <header class="site-header" id="site-header">
+    <nav class="nav container" aria-label="Main navigation">
+
+      <a class="nav__logo" href="#home" aria-label="Hakim Hakim — back to top">
+        <span class="nav__logo-mark" aria-hidden="true">&lt;HH/&gt;</span>
+        <span class="nav__logo-text">Hakim&nbsp;Elia Ibrahim</span>
+      </a>
+
+      <!--
+        The button is hidden on desktop and shown on mobile.
+        aria-expanded / aria-controls tell screen readers whether the menu is open
+        and which element it controls.
+      -->
+      <button class="nav__toggle" id="nav-toggle" type="button"
+              aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-menu">
+        <span class="nav__toggle-bar" aria-hidden="true"></span>
+        <span class="nav__toggle-bar" aria-hidden="true"></span>
+        <span class="nav__toggle-bar" aria-hidden="true"></span>
+      </button>
+
+      <div class="nav__menu" id="nav-menu">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="#home">Home</a></li>
+          <li><a class="nav__link" href="#about">About</a></li>
+          <li><a class="nav__link" href="#skills">Skills</a></li>
+          <li><a class="nav__link" href="#projects">Projects</a></li>
+          <li><a class="nav__link" href="#education">Education</a></li>
+          <li><a class="nav__link" href="#contact">Contact</a></li>
+        </ul>
+
+        <!-- Theme switch. It is inside the menu wrapper so it sits nicely on mobile too. -->
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="4.5"></circle>
+            <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"></path>
+          </svg>
+          <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"></path>
+          </svg>
+          <span class="theme-toggle__label">Theme</span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+
+    <!-- ===================== 1. HERO ===================== -->
+    <section class="hero section" id="home">
+      <!-- Decorative background. aria-hidden keeps screen readers from announcing it. -->
+      <div class="hero__glow" aria-hidden="true"></div>
+
+      <div class="container hero__grid">
+        <div class="hero__content reveal">
+          <p class="hero__eyebrow">
+            <span class="status-dot" aria-hidden="true"></span>
+            Open to internships &amp; learning opportunities
+          </p>
+
+          <h1 class="hero__title">Hi, I'm <span class="accent-text">Hakim Elia Ibrahim</span></h1>
+
+          <p class="hero__subtitle">Electronics Technology Student &amp; Aspiring Web Developer</p>
+
+          <p class="hero__text">
+            I'm a student at the University of Eastern Africa, Baraton,
+            specialising in Communication Electronics. I'm interested in combining
+            electronics, programming and web technologies to build useful, practical solutions —
+            and I'm learning a little more every day.
+          </p>
+
+          <div class="hero__actions">
+            <a class="btn btn--primary" href="#projects">View My Projects</a>
+            <a class="btn btn--ghost" href="#contact">Contact Me</a>
+            <a class="btn btn--outline" href="https://github.com/kimo-code211" target="_blank" rel="noopener noreferrer">
+              <!-- Inline SVG icon: no image request, scales cleanly, inherits currentColor. -->
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"></path>
+              </svg>
+              GitHub
+            </a>
+          </div>
+
+          <!-- Quick facts, honest and specific. -->
+          <dl class="hero__facts">
+            <div class="hero__fact">
+              <dt>Location</dt>
+              <dd>Eldoret, Kenya</dd>
+            </div>
+            <div class="hero__fact">
+              <dt>Studying</dt>
+              <dd>BSc Electronics Technology</dd>
+            </div>
+            <div class="hero__fact">
+              <dt>Currently learning</dt>
+              <dd>JavaScript &amp; Responsive Design</dd>
+            </div>
+          </dl>
+        </div>
+
+        <!--
+          A small "code card" instead of a stock photo. It is pure HTML/CSS,
+          so it adds no image weight and it fits a developer portfolio.
+        -->
+        <div class="hero__visual reveal reveal--delay-1" aria-hidden="true">
+          <div class="code-card">
+            <div class="code-card__bar">
+              <span class="code-card__dot"></span>
+              <span class="code-card__dot"></span>
+              <span class="code-card__dot"></span>
+              <span class="code-card__name">about-me.js</span>
+            </div>
+            <pre class="code-card__body"><code><span class="tok-key">const</span> <span class="tok-var">hakim</span> = {
+  <span class="tok-prop">name</span>: <span class="tok-str">'Hakim Elia Ibrahim'</span>,
+  <span class="tok-prop">location</span>: <span class="tok-str">'Eldoret, Kenya'</span>,
+  <span class="tok-prop">degree</span>: <span class="tok-str">'BSc Electronics Technology'</span>,
+  <span class="tok-prop">focus</span>: <span class="tok-str">'Communication Electronics'</span>,
+  <span class="tok-prop">stack</span>: [<span class="tok-str">'HTML'</span>, <span class="tok-str">'CSS'</span>, <span class="tok-str">'Java'</span>, <span class="tok-str">'JS'</span>],
+  <span class="tok-prop">learning</span>: <span class="tok-key">true</span>,
+  <span class="tok-prop">openTo</span>: <span class="tok-str">'internships'</span>
+};</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 2. ABOUT ===================== -->
+    <section class="section section--alt" id="about">
+      <div class="container">
+        <header class="section__header reveal">
+          <p class="section__kicker">01 — About</p>
+          <h2 class="section__title">A student who builds, learns and keeps improving</h2>
+        </header>
+
+        <div class="about__grid">
+          <div class="about__text reveal">
+            <p>
+              I'm Pursuing <strong>Bachelor of Science in Electronics Technology</strong>,    student at the
+              University of Eastern Africa, Baraton, specialising in <strong>Communication Electronics</strong>.
+              My coursework gives me a solid grounding in how signals, circuits and communication
+              systems actually work.
+            </p>
+            <p>
+              Alongside my degree, I'm teaching myself <strong>programming and web development</strong>.
+              I started with HTML and CSS, moved into basic Java, and I'm now working through
+              JavaScript, responsive design, and Git &amp; GitHub.
+            </p>
+            <p>
+              What interests me most is the point where these fields meet — using electronics knowledge
+              together with code to build <strong>practical solutions</strong> rather than theory on paper.
+              I'm still early in that journey, and I'm honest about it: I'm a continuous learner who
+              prefers building small, real projects to claiming skills I don't have yet.
+            </p>
+            <p>
+              I'm currently looking for internship and scholarship opportunities where I can
+              contribute, be mentored, and grow as a developer.
+            </p>
+          </div>
+
+          <!-- Info card: quick, scannable details. -->
+          <aside class="about__card reveal reveal--delay-1" aria-label="Quick details">
+            <h3 class="about__card-title">Quick details</h3>
+            <ul class="about__list">
+              <li>
+                <span class="about__label">Name</span>
+                <span class="about__value">Hakim Elia Ibrahim</span>
+              </li>
+              <li>
+                <span class="about__label">Location</span>
+                <span class="about__value">Eldoret, Kenya</span>
+              </li>
+              <li>
+                <span class="about__label">University</span>
+                <span class="about__value">UEA Baraton</span>
+              </li>
+              <li>
+                <span class="about__label">Programme</span>
+                <span class="about__value">BSc Electronics Technology</span>
+              </li>
+              <li>
+                <span class="about__label">Option</span>
+                <span class="about__value">Communication Electronics</span>
+              </li>
+              <li>
+                <span class="about__label">Email</span>
+                <span class="about__value"><a href="mailto:hakimelia3@gmail.com">hakimelia3@gmail.com</a></span>
+              </li>
+            </ul>
+            <a class="btn btn--primary btn--block" href="mailto:hakimelia3@gmail.com">Get in touch</a>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 3. SKILLS ===================== -->
+    <section class="section" id="skills">
+      <div class="container">
+        <header class="section__header reveal">
+          <p class="section__kicker">02 — Skills</p>
+          <h2 class="section__title">What I can work with today</h2>
+          <p class="section__lead">
+            An honest snapshot. Anything still in progress is clearly marked
+            <span class="badge badge--learning">Currently Learning</span> instead of being exaggerated.
+          </p>
+        </header>
+
+        <div class="skills__grid">
+
+          <!-- Card 1: Programming -->
+          <article class="skill-card reveal">
+            <div class="skill-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false"><path d="m8.5 8-4.5 4 4.5 4M15.5 8l4.5 4-4.5 4M13.5 5l-3 14"></path></svg>
+            </div>
+            <h3 class="skill-card__title">Programming</h3>
+            <p class="skill-card__desc">Languages and markup I use to build things.</p>
+            <ul class="skill-list">
+              <li class="skill">
+                <span class="skill__name">HTML5</span>
+                <span class="skill__level">Core</span>
+              </li>
+              <li class="skill">
+                <span class="skill__name">CSS3</span>
+                <span class="skill__level">Core</span>
+              </li>
+              <li class="skill">
+                <span class="skill__name">Java</span>
+                <span class="skill__level">Basic</span>
+              </li>
+              <li class="skill">
+                <span class="skill__name">JavaScript</span>
+                <span class="badge badge--learning">Currently Learning</span>
+              </li>
+            </ul>
+          </article>
+
+          <!-- Card 2: Technology -->
+          <article class="skill-card reveal reveal--delay-1">
+            <div class="skill-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false"><path d="M9 3v6M15 3v6M6 9h12v3a6 6 0 0 1-6 6 6 6 0 0 1-6-6V9ZM12 18v3M8 21h8"></path></svg>
+            </div>
+            <h3 class="skill-card__title">Technology</h3>
+            <p class="skill-card__desc">Hardware and electronics from my degree.</p>
+            <ul class="skill-list">
+              <li class="skill">
+                <span class="skill__name">Electronics Fabrication</span>
+                <span class="skill__level">Coursework</span>
+              </li>
+              <li class="skill">
+                <span class="skill__name">Communication Electronics</span>
+                <span class="skill__level">Specialisation</span>
+              </li>
+              <li class="skill">
+                <span class="skill__name">Electronics &amp; Communication Tech</span>
+                <span class="skill__level">Coursework</span>
+              </li>
+              <li class="skill">
+                <span class="skill__name">Basic Computer Skills</span>
+                <span class="skill__level">Proficient</span>
+              </li>
+            </ul>
+          </article>
+
+          <!-- Card 3: Tools & Workflow -->
+          <article class="skill-card reveal reveal--delay-2">
+            <div class="skill-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.1-.5-.5-2.1 2.2-2.9Z"></path></svg>
+            </div>
+            <h3 class="skill-card__title">Tools &amp; Workflow</h3>
+            <p class="skill-card__desc">What I use day to day to write and ship code.</p>
+            <ul class="skill-list">
+              <li class="skill">
+                <span class="skill__name">VS Code</span>
+                <span class="skill__level">Daily driver</span>
+              </li>
+              <li class="skill">
+                <span class="skill__name">Git</span>
+                <span class="badge badge--learning">Currently Learning</span>
+              </li>
+              <li class="skill">
+                <span class="skill__name">GitHub</span>
+                <span class="badge badge--learning">Currently Learning</span>
+              </li>
+              <li class="skill">
+                <span class="skill__name">Responsive Web Design</span>
+                <span class="badge badge--learning">Currently Learning</span>
+              </li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 4. PROJECTS ===================== -->
+    <section class="section section--alt" id="projects">
+      <div class="container">
+        <header class="section__header reveal">
+          <p class="section__kicker">03 — Projects</p>
+          <h2 class="section__title">Things I've built and things in progress</h2>
+          <p class="section__lead">
+            A small but real collection. Cards marked <span class="badge badge--wip">In Development</span>
+            are not finished yet — I'd rather show honest progress than pretend.
+          </p>
+        </header>
+
+        <div class="projects__grid">
+
+          <!--
+            PROJECT CARD TEMPLATE
+            To add a new project later, copy this whole <article> block and change:
+              1. the h3 title
+              2. the badge (remove it, or change "In Development" to your status)
+              3. the description paragraph
+              4. the <li> technology tags
+              5. the href values in the links (keep rel="noopener noreferrer" for external links)
+          -->
+          <article class="project-card reveal">
+            <div class="project-card__top">
+              <span class="project-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false"><path d="M3 7h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Zm0 0 2-3h14l2 3M3 11h18M8 15h3"></path></svg>
+              </span>
+              <span class="badge badge--done">Learning Project</span>
+            </div>
+            <h3 class="project-card__title">Kimo Mini Banking App</h3>
+            <p class="project-card__desc">
+              A Java console-based banking application developed as part of my Java
+              programming learning journey. It practises the fundamentals: user input,
+              control flow, methods, and state handling in a text interface.
+            </p>
+            <ul class="tag-list" aria-label="Technologies used">
+              <li class="tag">Java</li>
+              <li class="tag">Console App</li>
+              <li class="tag">OOP Basics</li>
+            </ul>
+            <div class="project-card__links">
+              <a class="btn btn--primary btn--sm" href="https://github.com/kimo-code211" target="_blank" rel="noopener noreferrer">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"></path></svg>
+                View on GitHub
+              </a>
+            </div>
+          </article>
+
+          <article class="project-card project-card--wip reveal reveal--delay-1">
+            <div class="project-card__top">
+              <span class="project-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false"><path d="M4 5h16v14H4zM4 9h16M8 5v4"></path></svg>
+              </span>
+              <span class="badge badge--wip">In Development</span>
+            </div>
+            <h3 class="project-card__title">Personal Portfolio Website</h3>
+            <p class="project-card__desc">
+              The site you are looking at. Built by hand with semantic HTML5, mobile-first CSS3
+              and a small amount of vanilla JavaScript — no frameworks. It's an active learning
+              project that I keep refining as my skills grow.
+            </p>
+            <ul class="tag-list" aria-label="Technologies used">
+              <li class="tag">HTML5</li>
+              <li class="tag">CSS3</li>
+              <li class="tag">JavaScript</li>
+              <li class="tag">Responsive Design</li>
+            </ul>
+            <div class="project-card__links">
+              <a class="btn btn--outline btn--sm" href="https://github.com/kimo-code211" target="_blank" rel="noopener noreferrer">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"></path></svg>
+                Source on GitHub
+              </a>
+            </div>
+          </article>
+
+          <article class="project-card project-card--wip reveal reveal--delay-2">
+            <div class="project-card__top">
+              <span class="project-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6.3 6.3l2.8 2.8M14.9 14.9l2.8 2.8M17.7 6.3l-2.8 2.8M9.1 14.9l-2.8 2.8"></path></svg>
+              </span>
+              <span class="badge badge--wip">Planned</span>
+            </div>
+            <h3 class="project-card__title">Future Web Development Project</h3>
+            <p class="project-card__desc">
+              A placeholder for the next project I build as I move deeper into JavaScript and
+              responsive web development. The plan is to combine my electronics background with
+              the web — details coming soon.
+            </p>
+            <ul class="tag-list" aria-label="Planned technologies">
+              <li class="tag">JavaScript</li>
+              <li class="tag">Responsive Design</li>
+              <li class="tag">To Be Decided</li>
+            </ul>
+            <div class="project-card__links">
+              <span class="project-card__note">Work in progress — check my GitHub for updates.</span>
+            </div>
+          </article>
+        </div>
+
+        <div class="projects__more reveal">
+          <a class="btn btn--ghost" href="https://github.com/kimo-code211" target="_blank" rel="noopener noreferrer">
+            See everything on GitHub
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 5. EDUCATION ===================== -->
+    <section class="section" id="education">
+      <div class="container">
+        <header class="section__header reveal">
+          <p class="section__kicker">04 — Education</p>
+          <h2 class="section__title">Academic background</h2>
+        </header>
+
+        <div class="education reveal">
+          <article class="edu-card">
+            <div class="edu-card__marker" aria-hidden="true">
+              <span class="edu-card__dot"></span>
+            </div>
+
+            <div class="edu-card__body">
+              <div class="edu-card__head">
+                <h3 class="edu-card__degree">Bachelor of Science in Electronics Technology</h3>
+                <span class="badge badge--active">Currently Pursuing</span>
+              </div>
+              <p class="edu-card__school">University of Eastern Africa, Baraton</p>
+              <p class="edu-card__option"><strong>Option:</strong> Communication Electronics</p>
+              <p class="edu-card__status"><strong>Status:</strong> Currently Pursuing</p>
+              <p class="edu-card__desc">
+                Studying the principles behind electronic and communication systems while building
+                hands-on skills in electronics fabrication. Alongside the degree, I'm self-teaching
+                web development and programming so I can apply both together.
+              </p>
+
+              <ul class="tag-list" aria-label="Areas of study">
+                <li class="tag">Communication Electronics</li>
+                <li class="tag">Electronics Fabrication</li>
+                <li class="tag">Electronic Systems</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 6. LEARNING JOURNEY ===================== -->
+    <section class="section section--alt" id="journey">
+      <div class="container">
+        <header class="section__header reveal">
+          <p class="section__kicker">05 — Learning Journey</p>
+          <h2 class="section__title">The path I'm following</h2>
+          <p class="section__lead">
+            A realistic roadmap of where I am now and what comes next.
+          </p>
+        </header>
+
+        <!--
+          An ordered list because the sequence matters.
+          On desktop it renders horizontally; on mobile it stacks into a vertical timeline.
+          CSS does the switching — the HTML stays the same.
+        -->
+        <ol class="journey">
+          <li class="journey__step journey__step--done reveal">
+            <span class="journey__index" aria-hidden="true">1</span>
+            <h3 class="journey__title">HTML &amp; CSS</h3>
+            <p class="journey__text">Semantics, layout, Flexbox, Grid and styling fundamentals.</p>
+            <span class="badge badge--done">Foundation Built</span>
+          </li>
+
+          <li class="journey__step journey__step--current reveal reveal--delay-1">
+            <span class="journey__index" aria-hidden="true">2</span>
+            <h3 class="journey__title">JavaScript</h3>
+            <p class="journey__text">Variables, functions, DOM manipulation and event handling.</p>
+            <span class="badge badge--learning">Currently Learning</span>
+          </li>
+
+          <li class="journey__step journey__step--current reveal reveal--delay-2">
+            <span class="journey__index" aria-hidden="true">3</span>
+            <h3 class="journey__title">Responsive Web Development</h3>
+            <p class="journey__text">Mobile-first layout, breakpoints and cross-device testing.</p>
+            <span class="badge badge--learning">Currently Learning</span>
+          </li>
+
+          <li class="journey__step journey__step--current reveal reveal--delay-3">
+            <span class="journey__index" aria-hidden="true">4</span>
+            <h3 class="journey__title">Git &amp; GitHub</h3>
+            <p class="journey__text">Version control, commits, branches and publishing projects.</p>
+            <span class="badge badge--learning">Currently Learning</span>
+          </li>
+
+          <li class="journey__step reveal reveal--delay-4">
+            <span class="journey__index" aria-hidden="true">5</span>
+            <h3 class="journey__title">Advanced Web Development</h3>
+            <p class="journey__text">APIs, tooling and full projects — the next step after the basics.</p>
+            <span class="badge badge--wip">Up Next</span>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ===================== 7. CONTACT ===================== -->
+    <section class="section" id="contact">
+      <div class="container">
+        <header class="section__header reveal">
+          <p class="section__kicker">06 — Contact</p>
+          <h2 class="section__title">Let's talk</h2>
+          <p class="section__lead">
+            I'm open to internships, scholarship opportunities, collaborations and honest feedback
+            on my work. The fastest way to reach me is email.
+          </p>
+        </header>
+
+        <div class="contact__grid">
+
+          <div class="contact__info reveal">
+            <ul class="contact__list">
+              <li class="contact__item">
+                <span class="contact__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false"><path d="M3 6h18v12H3zM3 7l9 6 9-6"></path></svg>
+                </span>
+                <span class="contact__detail">
+                  <span class="contact__label">Email</span>
+                  <a class="contact__value" href="mailto:hakimelia3@gmail.com">hakimelia3@gmail.com</a>
+                </span>
+              </li>
+              <li class="contact__item">
+                <span class="contact__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>
+                </span>
+                <span class="contact__detail">
+                  <span class="contact__label">Location</span>
+                  <span class="contact__value">Eldoret, Kenya</span>
+                </span>
+              </li>
+              <li class="contact__item">
+                <span class="contact__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"></path></svg>
+                </span>
+                <span class="contact__detail">
+                  <span class="contact__label">GitHub</span>
+                  <a class="contact__value" href="https://github.com/kimo-code211" target="_blank" rel="noopener noreferrer">github.com/kimo-code211</a>
+                </span>
+              </li>
+            </ul>
+
+            <p class="contact__note">
+              I usually reply within a couple of days. If the form doesn't suit you,
+              emailing me directly always works.
+            </p>
+          </div>
+
+          <!--
+            CONTACT FORM
+            There is no backend in this project, so submitting opens the visitor's
+            email client with the message pre-filled (see the handler in script.js).
+            That way the button genuinely does something instead of faking success.
+
+            TO CONNECT A REAL SERVICE LATER (e.g. Formspree, Getform, or your own API):
+              1. Add action="https://formspree.io/f/YOUR_ID" method="POST" to <form>
+              2. In script.js, delete the submit handler inside initContactForm()
+                 so the browser posts normally.
+            The field names (name, email, message) already match what those services expect.
+          -->
+          <form class="contact__form reveal reveal--delay-1" id="contact-form" novalidate>
+            <h3 class="contact__form-title">Send me a message</h3>
+
+            <div class="field">
+              <label class="field__label" for="name">Name</label>
+              <input class="field__input" type="text" id="name" name="name"
+                     autocomplete="name" required placeholder="Your full name"
+                     aria-describedby="name-error">
+              <p class="field__error" id="name-error" role="alert" hidden></p>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="email">Email</label>
+              <input class="field__input" type="email" id="email" name="email"
+                     autocomplete="email" required placeholder="you@example.com"
+                     aria-describedby="email-error">
+              <p class="field__error" id="email-error" role="alert" hidden></p>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="message">Message</label>
+              <textarea class="field__input field__textarea" id="message" name="message"
+                        rows="5" required placeholder="Tell me a little about the opportunity or idea…"
+                        aria-describedby="message-error message-hint"></textarea>
+              <p class="field__hint" id="message-hint">
+                <span id="char-count">0</span>/1000 characters
+              </p>
+              <p class="field__error" id="message-error" role="alert" hidden></p>
+            </div>
+
+            <button class="btn btn--primary btn--block" type="submit">Send Message</button>
+
+            <!-- Status message for screen readers and sighted users alike. -->
+            <p class="form-status" id="form-status" role="status" aria-live="polite" hidden></p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <div class="site-footer__brand">
+        <p class="site-footer__name">Hakim Elia Ibrahim</p>
+        <p class="site-footer__tagline">Learning, building, and improving one project at a time.</p>
+      </div>
+
+      <nav class="site-footer__nav" aria-label="Footer navigation">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+        <a href="https://github.com/kimo-code211" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </nav>
+
+      <div class="site-footer__bottom">
+        <p>&copy; <span id="year">2026</span> Hakim Elia Ibrahim. All rights reserved.</p>
+        <button class="back-to-top" id="back-to-top" type="button" aria-label="Back to top">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6"></path></svg>
+          Top
+        </button>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

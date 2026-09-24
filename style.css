@@ -1,0 +1,1580 @@
+/* ==========================================================================
+   HAKIM HAKIM — PORTFOLIO STYLESHEET
+   ==========================================================================
+   How this file is organised (mobile-first):
+
+     1.  Design tokens (CSS custom properties) + themes
+     2.  Reset & base styles
+     3.  Reusable helpers (container, section, buttons, badges, tags)
+     4.  Header & navigation
+     5.  Hero
+     6.  About
+     7.  Skills
+     8.  Projects
+     9.  Education
+     10. Learning journey
+     11. Contact + form
+     12. Footer
+     13. Animations & scroll reveal
+     14. Responsive breakpoints (tablet / desktop)
+     15. Accessibility & reduced motion
+
+   "Mobile-first" means the base rules describe the SMALL screen layout.
+   Media queries then only ADD complexity for wider screens. This keeps the
+   CSS shorter and avoids having to override desktop rules on mobile.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1. DESIGN TOKENS & THEMES
+   ==========================================================================
+   A "design token" is just a named value. Instead of writing #0f766e in
+   forty places, we write var(--accent) once and change it everywhere by
+   editing a single line.
+
+   Theming works by putting data-theme="dark" or "light" on <html>.
+   script.js sets that attribute; the variables below react automatically.
+   -------------------------------------------------------------------------- */
+
+:root {
+  /* --- Light theme (default) --- */
+  --bg:            #f6f8fa;   /* page background            */
+  --bg-alt:        #ffffff;   /* alternating section        */
+  --surface:       #ffffff;   /* cards                      */
+  --surface-2:     #f1f4f8;   /* subtle inner panels        */
+  --border:        #e2e8f0;
+  --text:          #111827;   /* main text — near black     */
+  --text-muted:    #55616f;   /* secondary text             */
+  --accent:        #0f766e;   /* THE single accent colour   */
+  --accent-hover:  #0d5f59;
+  --accent-soft:   #d9f2ef;   /* pale accent for badges     */
+  --on-accent:     #ffffff;   /* text sitting on the accent */
+  --shadow-sm:     0 1px 2px rgba(16, 24, 40, .06), 0 1px 3px rgba(16, 24, 40, .08);
+  --shadow-md:     0 4px 12px rgba(16, 24, 40, .07), 0 12px 28px rgba(16, 24, 40, .07);
+  --shadow-lg:     0 12px 40px rgba(16, 24, 40, .12);
+
+  /* --- Layout --- */
+  --container:     1140px;
+  --radius-sm:     8px;
+  --radius:        14px;
+  --radius-lg:     20px;
+  --header-h:      68px;
+
+  /* --- Type --- */
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* --- Motion --- */
+  --t-fast: 150ms;
+  --t:      250ms;
+  --ease:   cubic-bezier(.4, 0, .2, 1);
+}
+
+/* Dark theme overrides. Only the colours change — every rule below that
+   references a variable updates itself. That is the whole point of tokens. */
+[data-theme="dark"] {
+  --bg:            #0b1020;
+  --bg-alt:        #0f1526;
+  --surface:       #131a2c;
+  --surface-2:     #1a2236;
+  --border:        #232d44;
+  --text:          #e7ecf3;
+  --text-muted:    #9aa8bd;
+  --accent:        #2dd4bf;
+  --accent-hover:  #5ee7d5;
+  --accent-soft:   #123a39;
+  --on-accent:     #06231f;
+  --shadow-sm:     0 1px 2px rgba(0, 0, 0, .4);
+  --shadow-md:     0 6px 20px rgba(0, 0, 0, .45);
+  --shadow-lg:     0 16px 48px rgba(0, 0, 0, .55);
+}
+
+
+/* ==========================================================================
+   2. RESET & BASE
+   ========================================================================== */
+
+/* The universal reset: removes default margins and makes padding/width
+   behave predictably (border-box includes padding in an element's width). */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  /* Smooth scrolling for anchor links — this one line powers requirement #4. */
+  scroll-behavior: smooth;
+
+  /*
+    Each section reserves space equal to the sticky header height, so when you
+    jump to #about the heading is not hidden underneath the nav bar.
+    (This is far simpler than calculating offsets in JavaScript.)
+  */
+  scroll-padding-top: calc(var(--header-h) + 12px);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text);
+  background-color: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  /* Colour transitions make the theme switch feel smooth rather than jarring. */
+  transition: background-color var(--t) var(--ease), color var(--t) var(--ease);
+}
+
+/* Lock scrolling while the mobile menu is open (script.js toggles this class). */
+body.no-scroll { overflow: hidden; }
+
+img, svg { display: block; max-width: 100%; }
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color var(--t-fast) var(--ease);
+}
+a:hover { color: var(--accent-hover); }
+
+ul, ol { list-style: none; }
+
+h1, h2, h3, h4 {
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-wrap: balance;   /* avoids a single lonely word on the last line */
+}
+
+/* A consistent, clearly visible focus ring for keyboard users.
+   :focus-visible only shows for keyboard navigation, not mouse clicks. */
+:where(a, button, input, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Respect the user's OS-level text size preference. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+
+/* ==========================================================================
+   3. REUSABLE HELPERS
+   ========================================================================== */
+
+/* Centres content and caps the width so lines of text stay readable. */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;       /* logical property = left+right in LTR */
+  padding-inline: 1.25rem;
+}
+
+/* Vertical rhythm: every section gets the same generous breathing room. */
+.section { padding-block: 4.5rem; }
+
+/* Alternating background so sections are visually separated. */
+.section--alt { background-color: var(--bg-alt); }
+
+.section__header {
+  max-width: 640px;
+  margin-bottom: 2.75rem;
+}
+
+/* The small "01 — About" label above each heading. */
+.section__kicker {
+  font-family: var(--font-mono);
+  font-size: .8rem;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: .75rem;
+}
+
+.section__title {
+  font-size: clamp(1.6rem, 4.5vw, 2.35rem);
+  margin-bottom: .9rem;
+}
+
+.section__lead {
+  color: var(--text-muted);
+  font-size: 1.02rem;
+}
+
+/* --- Buttons ----------------------------------------------------------
+   One base class + modifier classes (BEM naming: block__element--modifier).
+   Modifiers only change what differs, so the base stays the single source
+   of truth for size, radius and transitions.
+   -------------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  padding: .78rem 1.4rem;
+  font: inherit;
+  font-size: .94rem;
+  font-weight: 600;
+  line-height: 1.2;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: center;
+  transition:
+    transform var(--t-fast) var(--ease),
+    background-color var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease),
+    color var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease);
+}
+
+/* Subtle lift on hover — requirement #5, kept understated on purpose. */
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0); }
+
+.btn--primary {
+  background-color: var(--accent);
+  color: var(--on-accent);
+  box-shadow: var(--shadow-sm);
+}
+.btn--primary:hover {
+  background-color: var(--accent-hover);
+  color: var(--on-accent);
+  box-shadow: var(--shadow-md);
+}
+
+.btn--outline {
+  background-color: transparent;
+  border-color: var(--border);
+  color: var(--text);
+}
+.btn--outline:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background-color: var(--accent-soft);
+}
+
+.btn--ghost {
+  background-color: var(--surface);
+  border-color: var(--border);
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+}
+.btn--ghost:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.btn--sm { padding: .55rem 1rem; font-size: .86rem; }
+.btn--block { width: 100%; }
+
+/* Small inline icon (GitHub logo, arrows). Sized in em so it scales
+   with whatever button it sits in. */
+.icon {
+  width: 1.15em;
+  height: 1.15em;
+  fill: currentColor;      /* icon inherits the button's text colour */
+  stroke: currentColor;
+  stroke-width: 0;
+  flex-shrink: 0;
+}
+
+/* Icons that are line drawings rather than filled shapes. */
+.skill-card__icon svg,
+.contact__icon svg,
+.back-to-top svg,
+.project-card__icon svg,
+.btn--ghost .icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* --- Badges -----------------------------------------------------------
+   Honest status labels. This is how we say "Currently Learning"
+   instead of pretending to be an expert (requirement #8 / #10).
+   -------------------------------------------------------------------- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .22rem .6rem;
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.badge--learning {
+  background-color: var(--accent-soft);
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.badge--wip {
+  background-color: rgba(217, 119, 6, .12);
+  color: #b45309;
+  border-color: rgba(217, 119, 6, .28);
+}
+[data-theme="dark"] .badge--wip { color: #fbbf24; }
+
+.badge--done,
+.badge--active {
+  background-color: var(--surface-2);
+  color: var(--text-muted);
+  border-color: var(--border);
+}
+
+/* --- Technology tags -------------------------------------------------- */
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.tag {
+  font-family: var(--font-mono);
+  font-size: .76rem;
+  padding: .28rem .65rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+
+/* ==========================================================================
+   4. HEADER & NAVIGATION
+   ========================================================================== */
+
+.site-header {
+  position: sticky;      /* sticks to the top as you scroll */
+  top: 0;
+  z-index: 100;
+  height: var(--header-h);
+  background-color: var(--bg);   /* fallback for browsers without color-mix() */
+  background-color: color-mix(in srgb, var(--bg) 85%, transparent);
+  /* backdrop-filter gives the frosted-glass effect over scrolled content. */
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--t) var(--ease), box-shadow var(--t) var(--ease);
+}
+
+/* script.js adds this class once you scroll past the top of the page,
+   which makes the header boundary visible. */
+.site-header--scrolled {
+  border-bottom-color: var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: var(--header-h);
+}
+
+.nav__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.nav__logo:hover { color: var(--text); }
+
+/* The <HH/> mark reads as code, which suits a developer portfolio. */
+.nav__logo-mark {
+  font-family: var(--font-mono);
+  font-size: .82rem;
+  font-weight: 500;
+  color: var(--accent);
+  background-color: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+  padding: .3rem .5rem;
+  border-radius: var(--radius-sm);
+}
+
+.nav__logo-text { font-size: 1rem; }
+
+/* --- Hamburger button -------------------------------------------------
+   Three <span> bars. On open, script.js adds .is-open to the nav and CSS
+   rotates the top/bottom bars into an X while fading the middle one out.
+   -------------------------------------------------------------------- */
+.nav__toggle {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;           /* 44px is the recommended minimum touch target */
+  height: 44px;
+  padding: 10px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.nav__toggle-bar {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: var(--text);
+  border-radius: 2px;
+  transition: transform var(--t) var(--ease), opacity var(--t) var(--ease);
+}
+
+.nav.is-open .nav__toggle-bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav.is-open .nav__toggle-bar:nth-child(2) { opacity: 0; }
+.nav.is-open .nav__toggle-bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* --- The menu panel ---------------------------------------------------
+   MOBILE (base styles): a full-height panel that slides in from the right.
+   It is hidden with visibility+opacity rather than display:none so the
+   transition can actually animate.
+   -------------------------------------------------------------------- */
+.nav__menu {
+  position: fixed;
+  top: var(--header-h);
+  right: 0;
+  bottom: 0;
+  width: min(78vw, 320px);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.75rem 1.5rem;
+  background-color: var(--bg-alt);
+  border-left: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  overflow-y: auto;
+
+  /* Hidden state.
+     NOTE: we deliberately animate opacity + a small scale here instead of
+     translateX(). Sliding the panel off to the right would push it past the
+     viewport edge and give the whole page a horizontal scrollbar on mobile.
+     Scaling from the top-right corner keeps the "menu unfolds" feel with
+     zero overflow. */
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(.97);
+  transform-origin: top right;
+  transition:
+    opacity var(--t) var(--ease),
+    transform var(--t) var(--ease),
+    visibility var(--t);
+}
+
+.nav__menu.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+}
+
+.nav__list {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+}
+
+.nav__link {
+  display: block;
+  padding: .7rem .85rem;
+  font-size: .98rem;
+  font-weight: 500;
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  border-left: 2px solid transparent;
+  transition: background-color var(--t-fast) var(--ease),
+              color var(--t-fast) var(--ease),
+              border-color var(--t-fast) var(--ease);
+}
+
+.nav__link:hover {
+  background-color: var(--surface-2);
+  color: var(--accent);
+}
+
+/* script.js marks the link for whichever section is currently on screen. */
+.nav__link.is-active {
+  color: var(--accent);
+  border-left-color: var(--accent);
+  background-color: var(--accent-soft);
+  font-weight: 600;
+}
+
+/* --- Theme toggle ----------------------------------------------------- */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  padding: .6rem .9rem;
+  font: inherit;
+  font-size: .88rem;
+  font-weight: 500;
+  color: var(--text);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+.theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+.theme-toggle__icon {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+/* Only the icon matching the current theme is shown. */
+.theme-toggle__icon--moon { display: none; }
+[data-theme="dark"] .theme-toggle__icon--sun  { display: none; }
+[data-theme="dark"] .theme-toggle__icon--moon { display: block; }
+
+
+/* ==========================================================================
+   5. HERO
+   ========================================================================== */
+
+.hero {
+  position: relative;
+  padding-block: 3.5rem 4.5rem;
+  overflow: hidden;
+  /* A soft accent wash behind the hero. Kept very subtle on purpose —
+     the brief asks to avoid distracting gradients. */
+  background:
+    radial-gradient(900px 420px at 85% -10%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 70%);
+}
+
+/* Purely decorative. Hidden from screen readers via aria-hidden. */
+.hero__glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--text) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--text) 5%, transparent) 1px, transparent 1px);
+  background-size: 48px 48px;
+  /* Fade the grid out towards the bottom so it does not fight the content. */
+  -webkit-mask-image: radial-gradient(600px 400px at 70% 20%, #000, transparent 75%);
+  mask-image: radial-gradient(600px 400px at 70% 20%, #000, transparent 75%);
+  opacity: .55;
+}
+
+.hero__grid {
+  position: relative;      /* sits above .hero__glow */
+  display: grid;
+  gap: 3rem;
+}
+
+/* Small pill above the headline with a pulsing dot. */
+.hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+  color: var(--text-muted);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  padding: .38rem .8rem;
+  border-radius: 999px;
+  margin-bottom: 1.4rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  /* The pulsing ring is a separate box-shadow animation — cheap and smooth. */
+  animation: pulse 2.4s var(--ease) infinite;
+}
+
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent); }
+  70%  { box-shadow: 0 0 0 9px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+.hero__title {
+  /* clamp(min, preferred, max) gives fluid type that never gets absurd —
+     this is how we stay responsive without media queries (requirement: 
+     avoid "huge text"). */
+  font-size: clamp(2.1rem, 7vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: .9rem;
+}
+
+.accent-text { color: var(--accent); }
+
+.hero__subtitle {
+  font-size: clamp(1.02rem, 2.6vw, 1.3rem);
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.hero__text {
+  color: var(--text-muted);
+  max-width: 56ch;         /* ~56 characters per line = comfortable reading */
+  margin-bottom: 1.9rem;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+  margin-bottom: 2.5rem;
+}
+
+/* Definition list of quick facts. <dl>/<dt>/<dd> is the semantically
+   correct markup for label + value pairs. */
+.hero__facts {
+  display: grid;
+  gap: 1rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.hero__fact dt {
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: .2rem;
+}
+
+.hero__fact dd {
+  font-size: .95rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* --- The code card ----------------------------------------------------
+   A fake editor window built from HTML only: no image download, crisp at
+   any resolution, and it fits the subject matter.
+   -------------------------------------------------------------------- */
+.code-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.code-card__bar {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .7rem .9rem;
+  background-color: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.code-card__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--border);
+}
+/* Traffic-light colours, muted so they do not compete with the accent. */
+.code-card__dot:nth-child(1) { background-color: #f87171; }
+.code-card__dot:nth-child(2) { background-color: #fbbf24; }
+.code-card__dot:nth-child(3) { background-color: #34d399; }
+
+.code-card__name {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: .74rem;
+  color: var(--text-muted);
+}
+
+.code-card__body {
+  padding: 1.15rem 1.1rem;
+  font-family: var(--font-mono);
+  font-size: .8rem;
+  line-height: 1.85;
+  overflow-x: auto;          /* small screens can scroll the code sideways */
+  color: var(--text);
+}
+
+/* Syntax highlighting colours — kept to a restrained palette. */
+.tok-key  { color: #c084fc; }
+.tok-var  { color: var(--accent); }
+.tok-prop { color: #60a5fa; }
+.tok-str  { color: #86efac; }
+[data-theme="light"] .tok-key  { color: #7c3aed; }
+[data-theme="light"] .tok-prop { color: #1d4ed8; }
+[data-theme="light"] .tok-str  { color: #15803d; }
+
+
+/* ==========================================================================
+   6. ABOUT
+   ========================================================================== */
+
+.about__grid { display: grid; gap: 2rem; }
+
+.about__text p {
+  color: var(--text-muted);
+  margin-bottom: 1.1rem;
+}
+.about__text p:last-child { margin-bottom: 0; }
+
+/* <strong> inside the muted paragraphs pulls key facts back to full contrast,
+   which creates hierarchy without adding extra markup. */
+.about__text strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.about__card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.6rem;
+  box-shadow: var(--shadow-sm);
+  height: fit-content;
+}
+
+.about__card-title {
+  font-size: 1.02rem;
+  margin-bottom: 1.15rem;
+  padding-bottom: .85rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.about__list { display: grid; gap: .85rem; margin-bottom: 1.5rem; }
+
+.about__list li {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: .1rem;
+}
+
+.about__label {
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.about__value { font-size: .93rem; font-weight: 500; color: var(--text); }
+.about__value a { font-weight: 500; word-break: break-word; }
+
+
+/* ==========================================================================
+   7. SKILLS
+   ========================================================================== */
+
+.skills__grid {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.skill-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.6rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--t) var(--ease),
+              box-shadow var(--t) var(--ease),
+              border-color var(--t) var(--ease);
+}
+
+/* Lift + accent border on hover: noticeable but not distracting. */
+.skill-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+}
+
+.skill-card__icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 1.1rem;
+  color: var(--accent);
+  background-color: var(--accent-soft);
+  border-radius: 12px;
+}
+.skill-card__icon svg { width: 24px; height: 24px; }
+
+.skill-card__title { font-size: 1.12rem; margin-bottom: .35rem; }
+
+.skill-card__desc {
+  font-size: .9rem;
+  color: var(--text-muted);
+  margin-bottom: 1.3rem;
+}
+
+.skill-list { display: grid; gap: .1rem; }
+
+.skill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: .68rem .5rem;
+  border-radius: var(--radius-sm);
+  border-bottom: 1px solid var(--border);
+  transition: background-color var(--t-fast) var(--ease);
+}
+.skill:last-child { border-bottom: 0; }
+.skill:hover { background-color: var(--surface-2); }
+
+.skill__name {
+  font-size: .92rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.skill__level {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+
+/* ==========================================================================
+   8. PROJECTS
+   ========================================================================== */
+
+.projects__grid {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.6rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--t) var(--ease),
+              box-shadow var(--t) var(--ease),
+              border-color var(--t) var(--ease);
+}
+
+.project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+}
+
+/* Work-in-progress cards get a dashed border so their status is obvious
+   even without reading the badge — useful for colour-blind visitors. */
+.project-card--wip {
+  border-style: dashed;
+  background-color: var(--surface);   /* fallback for browsers without color-mix() */
+  background-color: color-mix(in srgb, var(--surface) 92%, var(--bg));
+}
+
+.project-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+}
+
+.project-card__icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  color: var(--accent);
+  background-color: var(--accent-soft);
+  border-radius: 12px;
+}
+.project-card__icon svg { width: 23px; height: 23px; }
+
+.project-card__title { font-size: 1.15rem; margin-bottom: .6rem; }
+
+.project-card__desc {
+  font-size: .93rem;
+  color: var(--text-muted);
+  margin-bottom: 1.2rem;
+}
+
+.tag-list { margin-bottom: 1.4rem; }
+
+/* margin-top:auto pushes the links to the bottom, so all three cards keep
+   their buttons aligned even though the descriptions differ in length. */
+.project-card__links {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+  align-items: center;
+}
+
+.project-card__note {
+  font-size: .82rem;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+.projects__more {
+  margin-top: 2.25rem;
+  text-align: center;
+}
+
+
+/* ==========================================================================
+   9. EDUCATION
+   ========================================================================== */
+
+.edu-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.25rem;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-sm);
+}
+
+/* The vertical line + dot that make this read as a timeline entry. */
+.edu-card__marker {
+  position: relative;
+  width: 14px;
+  display: flex;
+  justify-content: center;
+}
+
+.edu-card__marker::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  bottom: -1.75rem;
+  width: 2px;
+  background-color: var(--border);
+}
+
+.edu-card__dot {
+  position: relative;
+  z-index: 1;
+  width: 14px;
+  height: 14px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  /* The ring makes the "current" status pop without animation. */
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.edu-card__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .75rem;
+  margin-bottom: .5rem;
+}
+
+.edu-card__degree { font-size: 1.18rem; }
+
+.edu-card__school {
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: .85rem;
+}
+
+.edu-card__option,
+.edu-card__status {
+  font-size: .92rem;
+  color: var(--text-muted);
+  margin-bottom: .3rem;
+}
+.edu-card__option strong,
+.edu-card__status strong { color: var(--text); font-weight: 600; }
+
+.edu-card__desc {
+  font-size: .93rem;
+  color: var(--text-muted);
+  margin-block: .9rem 1.2rem;
+}
+
+
+/* ==========================================================================
+   10. LEARNING JOURNEY
+   ==========================================================================
+   An ordered list (<ol>) because the SEQUENCE is meaningful.
+   Mobile (base): a vertical timeline.
+   Desktop (see section 14): a horizontal progression path with arrows.
+   The HTML never changes — only the CSS does.
+   -------------------------------------------------------------------------- */
+
+.journey {
+  display: grid;
+  gap: 1rem;
+  position: relative;
+}
+
+.journey__step {
+  position: relative;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.4rem 1.4rem 1.4rem 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--t) var(--ease),
+              border-color var(--t) var(--ease),
+              box-shadow var(--t) var(--ease);
+}
+
+.journey__step:hover {
+  transform: translateX(4px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Completed step: solid accent rail. Current step: brighter + accent glow. */
+.journey__step--done    { border-left-color: var(--accent); }
+.journey__step--current {
+  border-left-color: var(--accent);
+  background-color: var(--surface);   /* fallback for browsers without color-mix() */
+  background-color: color-mix(in srgb, var(--surface) 94%, var(--accent));
+}
+
+.journey__index {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin-bottom: .85rem;
+  font-family: var(--font-mono);
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--accent);
+  background-color: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: 50%;
+}
+
+.journey__title { font-size: 1.05rem; margin-bottom: .4rem; }
+
+.journey__text {
+  font-size: .9rem;
+  color: var(--text-muted);
+  margin-bottom: .9rem;
+}
+
+
+/* ==========================================================================
+   11. CONTACT + FORM
+   ========================================================================== */
+
+.contact__grid { display: grid; gap: 2rem; }
+
+.contact__list { display: grid; gap: .85rem; margin-bottom: 1.5rem; }
+
+.contact__item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.15rem;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
+}
+.contact__item:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  transform: translateX(3px);
+}
+
+.contact__icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  color: var(--accent);
+  background-color: var(--accent-soft);
+  border-radius: 10px;
+}
+.contact__icon svg { width: 20px; height: 20px; }
+
+.contact__detail { display: grid; gap: .1rem; min-width: 0; }
+
+.contact__label {
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.contact__value {
+  font-size: .95rem;
+  font-weight: 500;
+  color: var(--text);
+  word-break: break-word;
+}
+a.contact__value { color: var(--accent); }
+a.contact__value:hover { color: var(--accent-hover); text-decoration: underline; }
+
+.contact__note {
+  font-size: .88rem;
+  color: var(--text-muted);
+  padding-left: 1rem;
+  border-left: 2px solid var(--border);
+}
+
+/* --- The form --------------------------------------------------------- */
+.contact__form {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.contact__form-title { font-size: 1.12rem; margin-bottom: 1.4rem; }
+
+.field { margin-bottom: 1.15rem; }
+
+.field__label {
+  display: block;
+  font-size: .85rem;
+  font-weight: 600;
+  margin-bottom: .45rem;
+  color: var(--text);
+}
+
+.field__input {
+  width: 100%;
+  padding: .78rem .95rem;
+  font: inherit;
+  font-size: .94rem;
+  color: var(--text);
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+}
+
+.field__input::placeholder { color: color-mix(in srgb, var(--text-muted) 75%, transparent); }
+
+.field__input:hover { border-color: color-mix(in srgb, var(--text-muted) 45%, var(--border)); }
+
+.field__input:focus {
+  outline: none;                     /* replaced by the ring below */
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.field__textarea { resize: vertical; min-height: 130px; line-height: 1.6; }
+
+/* Error state — script.js adds .is-invalid and reveals the <p> below. */
+.field__input.is-invalid {
+  border-color: #dc2626;
+  background-color: rgba(220, 38, 38, .04);
+}
+.field__input.is-invalid:focus { box-shadow: 0 0 0 3px rgba(220, 38, 38, .2); }
+
+.field__error {
+  font-size: .8rem;
+  font-weight: 500;
+  color: #dc2626;
+  margin-top: .4rem;
+}
+[data-theme="dark"] .field__error { color: #fca5a5; }
+
+.field__hint {
+  font-size: .78rem;
+  color: var(--text-muted);
+  margin-top: .4rem;
+  font-variant-numeric: tabular-nums;   /* stops the count from jittering */
+}
+
+/* Result message shown after a submit attempt. */
+.form-status {
+  margin-top: 1.1rem;
+  padding: .85rem 1rem;
+  font-size: .88rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background-color: var(--surface-2);
+  color: var(--text);
+}
+.form-status--success {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  background-color: var(--accent-soft);
+  color: var(--accent);
+}
+.form-status--error {
+  border-color: rgba(220, 38, 38, .4);
+  background-color: rgba(220, 38, 38, .08);
+  color: #b91c1c;
+}
+[data-theme="dark"] .form-status--error { color: #fca5a5; }
+
+
+/* ==========================================================================
+   12. FOOTER
+   ========================================================================== */
+
+.site-footer {
+  background-color: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  padding-block: 2.75rem 1.75rem;
+}
+
+.site-footer__inner { display: grid; gap: 1.75rem; }
+
+.site-footer__name { font-size: 1.08rem; font-weight: 700; margin-bottom: .35rem; }
+
+.site-footer__tagline {
+  font-size: .92rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.site-footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem 1.25rem;
+}
+
+.site-footer__nav a {
+  font-size: .88rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: color var(--t-fast) var(--ease);
+}
+.site-footer__nav a:hover { color: var(--accent); }
+
+.site-footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-size: .84rem;
+  color: var(--text-muted);
+}
+
+.back-to-top {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .45rem .85rem;
+  font: inherit;
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+}
+.back-to-top:hover { color: var(--accent); border-color: var(--accent); }
+.back-to-top svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+/* ==========================================================================
+   13. ANIMATIONS & SCROLL REVEAL
+   ==========================================================================
+   .reveal elements start invisible and slightly lower. When script.js sees
+   them enter the viewport it adds .is-visible, which runs the transition.
+
+   Why not animate everything with @keyframes? Because a transition triggered
+   on scroll only costs performance for what the user is actually looking at.
+   -------------------------------------------------------------------------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 600ms var(--ease),
+    transform 600ms var(--ease);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Stagger helpers — each delay class shifts an item 90ms later, which is
+   what makes a row of cards "cascade" instead of appearing all at once. */
+.reveal--delay-1 { transition-delay: 90ms; }
+.reveal--delay-2 { transition-delay: 180ms; }
+.reveal--delay-3 { transition-delay: 270ms; }
+.reveal--delay-4 { transition-delay: 360ms; }
+
+/* Only animate transform and opacity: these are handled by the GPU and do
+   not trigger layout recalculations, so scrolling stays smooth. */
+
+
+/* ==========================================================================
+   14. RESPONSIVE BREAKPOINTS
+   ==========================================================================
+   Mobile-first: everything above is the phone layout. From here we only ADD
+   rules for wider screens. Breakpoints are chosen by where the layout breaks,
+   not by specific device names.
+   -------------------------------------------------------------------------- */
+
+/* --- Small phones and up (420px): give buttons room to breathe --- */
+@media (min-width: 420px) {
+  .hero__actions .btn { flex: 0 0 auto; }
+}
+
+/* --- Large phones / small tablets (600px) --- */
+@media (min-width: 600px) {
+  .section { padding-block: 5.5rem; }
+
+  .hero__facts {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .about__list li {
+    grid-template-columns: 130px 1fr;
+    align-items: baseline;
+    gap: 1rem;
+  }
+
+  /* Two skill cards per row; the third spans the full width below. */
+  .skills__grid { grid-template-columns: repeat(2, 1fr); }
+  .skills__grid > :last-child { grid-column: 1 / -1; }
+
+  .contact__grid { grid-template-columns: 1fr; }
+}
+
+/* --- Tablets (768px) --- */
+@media (min-width: 768px) {
+  :root { --header-h: 74px; }
+
+  .projects__grid { grid-template-columns: repeat(2, 1fr); }
+
+  .contact__grid {
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  .site-footer__inner {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+  }
+  .site-footer__nav { grid-column: 1 / -1; }
+}
+
+/* --- Desktop (1024px): the main layout switch --- */
+@media (min-width: 1024px) {
+  .section { padding-block: 6.5rem; }
+
+  /* Hide the hamburger and show the links inline. */
+  .nav__toggle { display: none; }
+
+  .nav__menu {
+    /* Undo every piece of the mobile slide-in panel. */
+    position: static;
+    width: auto;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    overflow: visible;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  .nav__list { flex-direction: row; align-items: center; gap: .15rem; }
+
+  .nav__link {
+    position: relative;
+    padding: .45rem .7rem;
+    font-size: .9rem;
+    border-left: 0;
+    background: transparent;
+  }
+
+  /* Underline that grows from the centre on hover / when active. */
+  .nav__link::after {
+    content: '';
+    position: absolute;
+    left: .7rem;
+    right: .7rem;
+    bottom: .1rem;
+    height: 2px;
+    background-color: var(--accent);
+    border-radius: 2px;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform var(--t) var(--ease);
+  }
+  .nav__link:hover::after,
+  .nav__link.is-active::after { transform: scaleX(1); }
+
+  .nav__link:hover,
+  .nav__link.is-active { background: transparent; }
+  .nav__link.is-active { background-color: var(--accent-soft); }
+
+  /* Two-column hero: text on the left, code card on the right. */
+  .hero__grid {
+    grid-template-columns: 1.15fr 0.85fr;
+    align-items: center;
+    gap: 3.5rem;
+  }
+  .hero { padding-block: 5rem 6rem; }
+
+  .about__grid {
+    grid-template-columns: 1.5fr 0.9fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .skills__grid { grid-template-columns: repeat(3, 1fr); }
+  .skills__grid > :last-child { grid-column: auto; }   /* undo the 600px span */
+
+  .projects__grid { grid-template-columns: repeat(3, 1fr); }
+
+  /* Learning journey becomes a HORIZONTAL progression path. */
+  .journey {
+    grid-template-columns: repeat(5, 1fr);
+    gap: .85rem;
+    align-items: stretch;
+  }
+
+  .journey__step {
+    border-left: 0;
+    border-top: 3px solid var(--border);
+    padding: 1.4rem 1.15rem;
+  }
+  .journey__step:hover { transform: translateY(-4px); }
+  .journey__step--done,
+  .journey__step--current { border-top-color: var(--accent); }
+
+  /* Connector arrows between the desktop steps. */
+  .journey__step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -0.85rem;
+    width: .85rem;
+    height: 2px;
+    background-color: var(--border);
+    z-index: 1;
+  }
+}
+
+/* --- Wide desktop (1280px) --- */
+@media (min-width: 1280px) {
+  .hero__grid { grid-template-columns: 1.1fr 0.9fr; gap: 4.5rem; }
+}
+
+
+/* ==========================================================================
+   15. ACCESSIBILITY & REDUCED MOTION
+   ========================================================================== */
+
+/* Skip link: invisible until a keyboard user tabs to it, then it drops down. */
+.skip-link {
+  position: fixed;
+  top: .5rem;
+  left: .5rem;
+  z-index: 200;
+  padding: .75rem 1.2rem;
+  font-weight: 600;
+  color: var(--on-accent);
+  background-color: var(--accent);
+  border-radius: var(--radius-sm);
+  transform: translateY(-160%);
+  transition: transform var(--t) var(--ease);
+}
+.skip-link:focus {
+  transform: translateY(0);
+  color: var(--on-accent);
+}
+
+/* Only visible to screen readers — used for extra context where a visual
+   label would be redundant on screen. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/*
+   If the visitor has asked their OS to reduce motion, we skip all animation
+   and show everything in its final state immediately. Content must never be
+   hidden just because animation was disabled — hence opacity:1 below.
+*/
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* High-contrast preference: strengthen borders so cards stay distinguishable. */
+@media (prefers-contrast: more) {
+  :root {
+    --border: #94a3b8;
+    --text-muted: #374151;
+  }
+}
