@@ -1,11 +1,11 @@
-# Hakim Hakim — Personal Portfolio
+# Hakim Elia Ibrahim — Personal Portfolio
 
 A modern, responsive, hand-written personal portfolio website built with plain
 **HTML5**, **CSS3** and **vanilla JavaScript** — no frameworks, no build step,
 no dependencies to install.
 
 It presents me as an aspiring web developer while also showing my electronics
-and programming background as a third-year **BSc Electronics Technology**
+and programming background as a **BSc Electronics Technology**
 student (Communication Electronics option) at the University of Eastern Africa,
 Baraton.
 
