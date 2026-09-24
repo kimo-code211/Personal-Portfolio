@@ -312,7 +312,7 @@ Free to use as a reference or starting point for your own portfolio.
 
 ---
 
-**Hakim Hakim** — Eldoret, Kenya
+**Hakim Elia Ibrahim ** — Eldoret, Kenya
 [hakimelia3@gmail.com](mailto:hakimelia3@gmail.com) ·
 [github.com/kimo-code211](https://github.com/kimo-code211)
 
