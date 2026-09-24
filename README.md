@@ -63,11 +63,10 @@ No CSS framework, no JS library, no bundler. The whole site is three files.
 ## File structure
 
 ```
-Project 1/
+Personal Portfolio/
 ├── index.html      ← all markup and content
 ├── style.css       ← all styling, organised in 15 numbered sections
 ├── script.js       ← all behaviour, organised in 7 numbered functions
-├── hello-world.html← separate CSS animation practice page (not part of the portfolio)
 └── README.md       ← this file
 ```
 
@@ -103,7 +102,7 @@ A local server behaves more like real hosting and avoids browser restrictions
 on `file://` URLs. With Python already installed:
 
 ```bash
-cd "path/to/Project 1"
+cd "path/to/Personal Portfolio"
 python -m http.server 8000
 ```
 
@@ -203,54 +202,40 @@ same way.
 
 ## Publishing to GitHub Pages
 
-### 1. Create the repository
+This project already lives in the repository
+[`kimo-code211/Personal-Portfolio`](https://github.com/kimo-code211/Personal-Portfolio)
+and has been pushed to `main`, so the only remaining step is switching Pages on.
 
-On GitHub, click **New repository** and name it exactly:
+### 1. Turn on Pages
+
+Repository → **Settings** → **Pages** → under *Build and deployment*, set
+**Source** to `Deploy from a branch`, **Branch** to `main` and folder to
+`/ (root)` → **Save**.
+
+### 2. Wait and visit
+
+Deployment takes about a minute. Your site will then be live at:
 
 ```
-kimo-code211.github.io
+https://kimo-code211.github.io/Personal-Portfolio/
 ```
 
-A repository with that name is served automatically at
-`https://kimo-code211.github.io/` — no subfolder, no extra settings.
+> **Note on the URL:** because the repository is named `Personal-Portfolio`
+> rather than `kimo-code211.github.io`, GitHub serves it from a subfolder.
+> If you would prefer the cleaner `https://kimo-code211.github.io/` address,
+> rename the repository to exactly `kimo-code211.github.io` (Settings →
+> General → Repository name) and update the remote:
+>
+> ```bash
+> git remote set-url origin https://github.com/kimo-code211/kimo-code211.github.io.git
+> ```
 
-(Any other repository name also works, but the site will then live at
-`https://kimo-code211.github.io/REPO-NAME/`.)
-
-### 2. Upload your files
-
-**Easiest — through the website:**
-open the new repository → **Add file** → **Upload files** → drag in
-`index.html`, `style.css`, `script.js` and `README.md` → **Commit changes**.
-
-**Proper way — with Git** (worth learning, since it is on your roadmap):
+### 3. Update it later
 
 ```bash
-cd "path/to/Project 1"
+cd "path/to/Personal Portfolio"
 
-git init
 git add index.html style.css script.js README.md
-git commit -m "Add personal portfolio site"
-git branch -M main
-git remote add origin https://github.com/kimo-code211/kimo-code211.github.io.git
-git push -u origin main
-```
-
-### 3. Turn on Pages
-
-Repository → **Settings** → **Pages** → under *Build and deployment*,
-set **Source** to `Deploy from a branch`, **Branch** to `main` and folder
-to `/ (root)` → **Save**.
-
-### 4. Wait and visit
-
-Deployment takes about a minute. Then open
-`https://kimo-code211.github.io/`.
-
-### 5. Update it later
-
-```bash
-git add .
 git commit -m "Update project cards"
 git push
 ```
@@ -258,7 +243,14 @@ git push
 Changes go live within a minute or two.
 
 > **Heads-up:** anything you push to that repository is public. Do not commit
-> passwords, tokens, or a `.env` file.
+> passwords, tokens, or a `.env` file. `server.log` is a local test artefact
+> and is worth removing from the repo:
+>
+> ```bash
+> git rm --cached server.log
+> echo "server.log" >> .gitignore
+> git commit -m "Stop tracking local server log"
+> ```
 
 ---
 
